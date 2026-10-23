@@ -1,58 +1,35 @@
 # ShopHub E-Commerce
 
-Modern e-commerce website built with HTML, CSS, JavaScript, Node.js, Express, and MongoDB.
+A full-stack online store demo built with HTML, CSS, vanilla JavaScript, Node.js, Express, and MongoDB.
 
 ## Features
 
-✅ Product catalog with search & filters
-✅ Shopping cart
-✅ Wishlist/Favorites
-✅ Product reviews & ratings
-✅ Newsletter signup
-✅ Order management
-✅ Responsive design
-✅ MongoDB integration
+- Searchable product catalogue
+- Shopping cart and wishlist
+- Product reviews and ratings
+- Newsletter form and order management UI
+- Responsive storefront
 
-## Installation
+## Run locally
 
-```bash
-npm install
-```
+1. Install Node.js and MongoDB, or create a MongoDB Atlas database.
+2. Install dependencies with `npm install`.
+3. Copy `.env.example` to `.env` and set `MONGO_URI` to your database connection string.
+4. Start the server with `npm start`.
+5. Open `http://localhost:3000`.
 
-## Setup
+Keep `.env` local. Only the placeholder `.env.example` belongs in Git.
 
-1. Install MongoDB (or use MongoDB Atlas)
-2. Update `.env` with MongoDB URI
-3. Run `npm start`
-4. Visit `http://localhost:3000`
+## API routes
 
-## API Endpoints
+- `GET /api/products` — list products
+- `GET /api/products/:id` — fetch one product
+- `POST /api/orders` — create an order
+- `GET /api/orders` — list orders
+- `POST /api/seed` — add sample data
 
-- `GET /api/products` - Get all products
-- `GET /api/products/:id` - Get single product
-- `POST /api/orders` - Create order
-- `GET /api/orders` - Get all orders
-- `POST /api/seed` - Seed sample data
+## Project structure
 
-## Project Structure
-
-```
-.
-├── package.json
-├── server.js
-├── .env
-└── public/
-    ├── index.html
-    ├── styles.css
-    └── app.js
-```
-
-## Tech Stack
-
-- HTML5
-- CSS3
-- Vanilla JavaScript
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
+- `server.js` — Express and MongoDB server
+- `public/` — storefront assets
+- `.env.example` — safe local configuration template
