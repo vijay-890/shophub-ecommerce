@@ -18,11 +18,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadProducts() {
     try {
-        const response = await fetch(`${API_URL}/products`);
-        products = await response.json();
+        const response = await fetch(API_URL + "/products");
+        if (!response.ok) throw new Error("Product API returned " + response.status);
+        const result = await response.json();
+        if (!Array.isArray(result) || result.length === 0) {
+            throw new Error("Product API returned no catalogue.");
+        }
+        products = result;
+        document.getElementById("catalogStatus").textContent = "Loaded " + result.length + " products.";
         displayProducts(products);
     } catch (error) {
-        console.error('Error:', error);
+        console.error("Product API unavailable; showing the sample catalogue.", error);
+        document.getElementById("catalogStatus").textContent =
+            "Showing sample products. Connect and seed MongoDB to load saved products.";
         displayMockProducts();
     }
 }
@@ -198,28 +206,29 @@ function submitOrder(event) {
     const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const orderData = { items: cart, totalPrice, customerName, customerEmail, address };
 
-    fetch(`${API_URL}/orders`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+    fetch(API_URL + "/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData)
-    }).then(response => response.json()).then(order => {
+    }).then((response) => {
+        if (!response.ok) throw new Error("Order API returned " + response.status);
+        return response.json();
+    }).then((order) => {
         closeCheckout();
-        showSuccessMessage(order._id, customerEmail);
+        showSuccessMessage(order._id);
         cart = [];
         saveCartToLocalStorage();
         updateCartUI();
-    }).catch(() => {
-        closeCheckout();
-        showSuccessMessage('DEMO-' + Date.now(), customerEmail);
-        cart = [];
-        saveCartToLocalStorage();
-        updateCartUI();
+    }).catch((error) => {
+        console.error("Order could not be submitted.", error);
+        showNotification("Order was not submitted. Check the backend/database; your cart is still saved.");
     });
 }
 
-function showSuccessMessage(orderId, email) {
-    document.getElementById('orderMessage').textContent = `Your order #${orderId} confirmed! Email sent to ${email}.`;
-    document.getElementById('successModal').classList.add('open');
+function showSuccessMessage(orderId) {
+    document.getElementById("orderMessage").textContent =
+        "Your sample order #" + orderId + " was saved. This demo does not send email.";
+    document.getElementById("successModal").classList.add("open");
 }
 
 function closeCheckout() {
